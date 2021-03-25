@@ -1,19 +1,19 @@
 version: '3.0'
 services:
-  haste-server:
+  hastebin:
     build: .
-    networks:
-      - db-network
-    environment:
-      - STORAGE_TYPE=memcached
-      - STORAGE_HOST=memcached
-      - STORAGE_PORT=11211
-    ports:
-      - 7777:7777
-  memcached:
-    image: memcached:latest
-    networks:
-      - db-network
+    container_name: hastebin
+    volumes:
+      - ./haste-data:/app/data
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.hastebin.rule=Host(`bin.koen02.nl`)"
+      - "traefik.http.routers.hastebin.entrypoints=websecure"
+      - "traefik.http.routers.hastebin.tls.certresolver=mytlschallenge"
+      - "traefik.http.services.hastebin.loadbalancer.server.port=7777"
 
 networks:
-  db-network:
+  default:
+    external:
+      name: proxy
