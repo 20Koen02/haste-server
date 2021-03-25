@@ -1,10 +1,13 @@
-version: '3.0'
+version: '3.8'
 services:
   hastebin:
     build: .
     container_name: hastebin
     volumes:
-      - ./haste-data:/app/data
+      - ./haste-data:/usr/src/app/data
+    environment:
+      - STORAGE_TYPE=file
+      - STORAGE_FILEPATH=./data
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
